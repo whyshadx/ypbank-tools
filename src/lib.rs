@@ -1,9 +1,17 @@
+//! Чтение, запись, конвертация и сравнение финансовых транзакций.
+
+/// Ошибки ввода-вывода и обработки данных.
 pub mod error;
+/// Поддерживаемые форматы транзакций.
 pub mod format;
+/// Общая модель транзакции.
 pub mod model;
 
+/// Чтение и запись бинарных транзакций.
 pub mod bin_format;
+/// Чтение и запись транзакций в CSV.
 pub mod csv_format;
+/// Чтение и запись транзакций в текстовом формате.
 pub mod text_format;
 
 use std::io::{Read, Write};
@@ -12,6 +20,8 @@ use error::Error;
 use format::Format;
 use model::Transaction;
 
+/// Читает транзакции в указанном формате.
+/// Возвращает ошибку при сбое чтения или некорректных данных.
 pub fn read(input: impl Read, format: Format) -> Result<Vec<Transaction>, Error> {
     match format {
         Format::Csv => csv_format::parse_lines(input),
@@ -20,6 +30,8 @@ pub fn read(input: impl Read, format: Format) -> Result<Vec<Transaction>, Error>
     }
 }
 
+/// Записывает транзакции в указанном формате.
+/// Возвращает ошибку, если данные не удалось закодировать или записать.
 pub fn write(
     mut output: impl Write,
     format: Format,
@@ -32,6 +44,8 @@ pub fn write(
     }
 }
 
+/// Читает транзакции во входном формате и записывает их в выходном.
+/// Передаёт вызывающему коду ошибки чтения и записи.
 pub fn convert(
     input: impl Read,
     input_format: Format,

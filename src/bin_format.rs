@@ -25,6 +25,8 @@ fn write_transaction(out: &mut impl Write, value: &Transaction) -> Result<(), Er
     Ok(())
 }
 
+/// Записывает список транзакций в бинарном формате.
+/// Возвращает ошибку, если данные не удалось закодировать или записать.
 pub fn write_transactions(out: &mut impl Write, value: &[Transaction]) -> Result<(), Error> {
     let count = u32::try_from(value.len())?;
     out.write_all(&count.to_le_bytes())?;
@@ -92,6 +94,8 @@ fn read_transaction(input: &mut impl Read) -> Result<Transaction, Error> {
     Ok(transaction)
 }
 
+/// Читает список транзакций в бинарном формате.
+/// Возвращает ошибку при сбое чтения или некорректных данных.
 pub fn read_transactions(mut input: impl Read) -> Result<Vec<Transaction>, Error> {
     let count = read_u32(&mut input)?;
     let mut transactions = Vec::new();

@@ -3,6 +3,8 @@ use std::io::{BufRead, BufReader, Read, Write};
 use crate::error::Error;
 use crate::model::{Amount, OperationType, Transaction};
 
+/// Записывает список транзакций в текстовом формате.
+/// Возвращает ошибку, если данные не удалось закодировать или записать.
 pub fn write_transactions(mut out: impl Write, transactions: &[Transaction]) -> Result<(), Error> {
     for transaction in transactions {
         let op_type = match transaction.op_type {
@@ -18,6 +20,8 @@ pub fn write_transactions(mut out: impl Write, transactions: &[Transaction]) -> 
     Ok(())
 }
 
+/// Читает список транзакций в текстовом формате.
+/// Возвращает ошибку при сбое чтения или некорректных данных.
 pub fn parse_lines(input: impl Read) -> Result<Vec<Transaction>, Error> {
     let buffered = BufReader::new(input);
 

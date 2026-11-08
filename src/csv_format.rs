@@ -5,6 +5,8 @@ use crate::{
     model::{OperationType, Transaction},
 };
 
+/// Читает список транзакций в формате CSV.
+/// Возвращает ошибку при сбое чтения или некорректных данных.
 pub fn parse_lines(input: impl Read) -> Result<Vec<Transaction>, Error> {
     let buffered = BufReader::new(input);
     let mut lines = buffered.lines();
@@ -27,6 +29,8 @@ pub fn parse_lines(input: impl Read) -> Result<Vec<Transaction>, Error> {
     Ok(transactions)
 }
 
+/// Записывает список транзакций в формате CSV.
+/// Возвращает ошибку, если данные не удалось закодировать или записать.
 pub fn write_transactions(mut out: impl Write, transactions: &[Transaction]) -> Result<(), Error> {
     writeln!(out, "date,category,kind,amount")?;
     for transaction in transactions {
