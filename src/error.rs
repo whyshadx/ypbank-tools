@@ -1,12 +1,10 @@
-use std::fmt::Display;
-
 #[derive(Debug)]
 pub enum Error {
     IO(std::io::Error),
     InvalidData(String),
 }
 
-impl Display for Error {
+impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::IO(internal_error) => {
@@ -33,5 +31,17 @@ impl From<std::num::ParseIntError> for Error {
             "Невозможно преобразовать значение в целое число: {}",
             value
         ))
+    }
+}
+
+impl From<std::num::TryFromIntError> for Error {
+    fn from(value: std::num::TryFromIntError) -> Self {
+        Self::InvalidData(format!("Невозможно преобразовать в целое число: {}", value))
+    }
+}
+
+impl From<std::string::FromUtf8Error> for Error {
+    fn from(value: std::string::FromUtf8Error) -> Self {
+        Self::InvalidData(format!("Некорректный UTF-8: {value}"))
     }
 }
