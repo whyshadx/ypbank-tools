@@ -1,4 +1,4 @@
-use crate::{error::Error, model::Transaction};
+use crate::{error::Error, model::Transaction, text_format::validate_date};
 use std::io::{Read, Write};
 
 fn write_string(out: &mut impl Write, value: &str) -> Result<(), Error> {
@@ -66,6 +66,7 @@ fn read_transaction(input: &mut impl Read) -> Result<Transaction, Error> {
     use crate::model::OperationType;
 
     let date = read_string(input)?;
+    validate_date(&date).ok_or_else(|| Error::InvalidData("Неправильная дата".into()))?;
     let op_category = read_string(input)?;
 
     let mut kind = [0u8; 1];

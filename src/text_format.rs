@@ -46,8 +46,8 @@ pub(crate) fn parse_line(text: &str, separator: char) -> Result<Transaction, Err
         ));
     }
 
-    let date =
-        parse_date(result[0]).ok_or_else(|| Error::InvalidData("Неправильная дата".into()))?;
+    validate_date(result[0]).ok_or_else(|| Error::InvalidData("Неправильная дата".into()))?;
+    let date = result[0].into();
     let op_category = result[1].into();
     let amount = result[3].parse::<Amount>()?;
     let op_type = match result[2] {
@@ -70,7 +70,7 @@ pub(crate) fn parse_line(text: &str, separator: char) -> Result<Transaction, Err
     Ok(transaction)
 }
 
-fn parse_date(input: &str) -> Option<String> {
+pub(crate) fn validate_date(input: &str) -> Option<()> {
     let split = input.split('-');
     let parts: Vec<&str> = split.collect();
 
@@ -93,7 +93,7 @@ fn parse_date(input: &str) -> Option<String> {
         return None;
     }
 
-    Some(input.into())
+    Some(())
 }
 
 fn parse_date_part(input: &str, char_count: i32, floor: i32, ceiling: i32) -> Option<i32> {
