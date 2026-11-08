@@ -1,12 +1,12 @@
-use std::io::{Read, Write};
 use crate::{error::Error, model::Transaction};
+use std::io::{Read, Write};
 
 fn write_string(out: &mut impl Write, value: &str) -> Result<(), Error> {
     let len = u32::try_from(value.len())?;
     let len = len.to_le_bytes();
     out.write_all(&len)?;
     out.write_all(value.as_bytes())?;
-    
+
     Ok(())
 }
 
@@ -15,13 +15,13 @@ fn write_transaction(out: &mut impl Write, value: &Transaction) -> Result<(), Er
     write_string(out, &value.op_category)?;
     let byte: u8 = match value.op_type {
         crate::model::OperationType::Expense => 1,
-        crate::model::OperationType::Income => 0
+        crate::model::OperationType::Income => 0,
     };
 
     out.write_all(&[byte])?;
 
     out.write_all(&value.amount.to_le_bytes())?;
-    
+
     Ok(())
 }
 
@@ -73,7 +73,11 @@ fn read_transaction(input: &mut impl Read) -> Result<Transaction, Error> {
     let op_type = match kind[0] {
         0 => OperationType::Income,
         1 => OperationType::Expense,
-        byte => return Err(Error::InvalidData(format!("Неизвестный тип операции: {byte}"))),
+        byte => {
+            return Err(Error::InvalidData(format!(
+                "Неизвестный тип операции: {byte}"
+            )));
+        }
     };
     let amount = read_u32(input)?;
 
