@@ -53,7 +53,7 @@ pub(crate) fn parse_line(text: &str, separator: char) -> Result<Transaction, Err
     validate_date(result[0]).ok_or_else(|| Error::InvalidData("Неправильная дата".into()))?;
     let date = result[0].into();
     let op_category = result[1].into();
-    let amount = result[3].parse::<Amount>()?;
+    let amount = result[3].trim().parse::<Amount>()?;
     let op_type = match result[2] {
         "income" => OperationType::Income,
         "expense" => OperationType::Expense,
